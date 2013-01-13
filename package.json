@@ -1,0 +1,29 @@
+{
+  "name": "lasso",
+  "version": "0.0.1",
+  "description": "JavaScript widget and page unit testing with on the fly instrumentation",
+  "author": "Gleb Bahmutov <gleb.bahmutov@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bahmutov/lasso.git"
+  },
+  "keywords": [
+    "testing", "unit test", "unit testing",
+    "js", "javascript",
+    "coverage", "code coverage", 
+    "istanbul", "phantomjs", "node"
+  ],
+  "dependencies": {
+    "connect": "*",
+	  "istanbul": "*"
+  },
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "scripts" : { 
+  },
+  "license": "MIT",
+  "preferGlobal": "true",
+  "main": "./lasso.js",
+  "bin": "./lasso.js"
+}
