@@ -15,7 +15,8 @@
   ],
   "dependencies": {
     "connect": "*",
-	  "istanbul": "*"
+	  "istanbul": "*",
+    "regexp-quote": "*"
   },
   "engines": {
     "node": ">= 0.8.0"

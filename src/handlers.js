@@ -4,8 +4,17 @@ var path = require('path');
 var istanbul = require('istanbul');
 var instrumenter = new istanbul.Instrumenter();
 
+var basedir = __dirname;
+function init(options) {
+	options = options || {};
+	basedir = options.basedir || __dirname;
+
+	console.log('basedir for handlers', basedir);
+}
+
+
 function fullPath(pathname) {
-	return path.join(__dirname, pathname);
+	return path.join(basedir, pathname);
 }
 
 function readFileSync(pathname) {
@@ -42,5 +51,6 @@ function notFound(response) {
 	response.end();
 }
 
+exports.init = init;
 exports.serveStaticHtml = serveStaticHtml;
 exports.serveStaticJs = serveStaticJs;
