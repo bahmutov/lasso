@@ -15,6 +15,8 @@ var htmlRegex = /\.html$/;
 var jsRegex = /\.js$/;
 var svgRegex = /\.svg$/;
 
+var lassoDir = path.dirname(process.argv[1]);
+
 var page = process.argv[2];
 console.assert(page, 'missing page filename');
 console.log('test page', page);
@@ -46,7 +48,7 @@ var app = connect()
   });
 
 var port = 8888;
-var phantomRunnerFilename = './src/basic_runner.js';
+var phantomRunnerFilename = path.join(lassoDir, 'src', 'basic_runner.js');
 var coverageFilename = 'coverage.json';
 
 var regexpQuote = require('regexp-quote');
