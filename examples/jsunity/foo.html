@@ -1,0 +1,38 @@
+<html>
+<head>
+	<title>jsUnity example</title>
+	<script src="jsunity-0.6.js"></script>
+
+	<script>
+		TestSuite = new jsUnity.TestSuite('Foo tests');
+	</script>
+	<script src="foo.js"></script>
+	<script src="fooTests.js"></script>
+</head>
+<body>
+<h2>Lasso jsUnity example</h2>
+<p>
+
+<script>
+	console.assert(jsUnity, 'jsunity not defined');
+	console.log(JSON.stringify(TestSuite));
+	var results = jsUnity.run(TestSuite);
+	console.assert(results, 'could not get test results');
+
+	function showMessage(message) {
+		var div = document.createElement('div');
+		console.log(message);
+		div.innerText = message;
+		document.body.appendChild(div);
+	}
+
+	showMessage(JSON.stringify(results));
+
+	if (typeof __coverage__ === 'undefined') {
+		showMessage('there is no coverage object, the code was not instrumented');
+	} else {
+		showMessage('have source code coverage!');
+	}
+</script>
+</body>
+</html>
