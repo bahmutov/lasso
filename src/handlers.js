@@ -45,14 +45,27 @@ function serveStaticHtml(pathname, response) {
 	response.end();
 }
 
-function serveStaticJs(pathname, response) {
+function isJsUnityFile(pathname) {
+	if (/jsunity-\d\.\d.js$/i.test(pathname)) {
+		console.log(pathname, 'is jsunity file');
+		return true;
+	}
+	return false;
+}
+
+function serveStaticJs(pathname, response, options) {
+	options = options || {};
 	response.writeHead(200, {
 		"Content-Type": 'application/javascript'
 	});
 	var filename = fullPath(pathname);
 	var code = readFileSync(pathname);
-	var instrumented = instrumenter.instrumentSync(code, filename);
-	response.write(instrumented);
+	if (options.jsunity && isJsUnityFile(pathname)) {
+		response.write(code);
+	} else {
+		var instrumented = instrumenter.instrumentSync(code, filename);
+		response.write(instrumented);
+	}
 	response.end();
 }
 

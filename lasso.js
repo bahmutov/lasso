@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+var options = require('./src/options').run();
+
 var connect = require('connect');
 var fs = require('fs');
 var http = require('http');
@@ -15,18 +17,15 @@ var htmlRegex = /\.html$/;
 var jsRegex = /\.js$/;
 var svgRegex = /\.svg$/;
 
-var lassoDir = path.dirname(process.argv[1]);
-
-var page = process.argv[2];
-console.assert(page, 'missing page filename');
-console.log('test page', page);
+console.assert(options.page, 'missing page filename');
+console.log('test page', options.page);
 
 // set base folder to be the page's immediate folder
 // then the page itself would be just its own file name
 handlers.init({
-	basedir: path.dirname(path.resolve(process.cwd(), page))
+	basedir: path.dirname(path.resolve(process.cwd(), options.page))
 });
-page = path.basename(page);
+options.page = path.basename(options.page);
 
 var app = connect()
 	.use(connect.favicon())
@@ -41,7 +40,7 @@ var app = connect()
 		} else if (svgRegex.test(pathname)) {
 			// todo serve svg
 		} else if (jsRegex.test(pathname)) {
-			handlers.serveStaticJs(pathname, res);
+			handlers.serveStaticJs(pathname, res, options);
 		} else {
     	res.end('ERROR: handler not defined for ' + pathname + '\n');
     }
@@ -51,12 +50,23 @@ var port = 8888;
 http.createServer(app).listen(port);
 console.log('server has started at port', port);
 
-var phantomRunnerFilename = path.join(lassoDir, 'src', 'basic_runner.js');
+console.assert(options.lassoDir, 'missing lasso dir');
+var runner;
+if (options.basic) {
+	runner = 'basic_runner.js';
+} else if (options.jsunity) {
+	runner = 'basic_runner.js'; // todo: replace with custom, grab test results?
+} else if (options.doh) {
+	runner = 'basic_runner.js'; // todo: replace with custom, grab test results?
+}
+var phantomRunnerFilename = path.join(options.lassoDir, 'src', runner);
+console.assert(fs.existsSync(phantomRunnerFilename), 'could not find phantom runner', phantomRunnerFilename);
+
 var coverageFilename = path.join(process.cwd(), 'cover.json');
 
 var regexpQuote = require('regexp-quote');
 var separatorRegex = new RegExp(regexpQuote(path.sep), 'g');
-var pageUrl = 'http://localhost:' + port + '/' + page.replace(separatorRegex, '/');
+var pageUrl = 'http://localhost:' + port + '/' + options.page.replace(separatorRegex, '/');
 console.log('page url to load', pageUrl);
 
 console.log('Opening in phantomjs page', pageUrl);
