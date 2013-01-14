@@ -14,18 +14,19 @@ function init(options) {
 
 
 function fullPath(pathname) {
-	var dir = basedir;
-	var name = path.basename(pathname);
-	var foundPath = path.join(dir, name);
+	var dir = path.join(basedir, path.dirname(pathname));
+	var foundPath = path.join(dir, pathname);
+	// console.log('looking for', pathname, 'basedir', basedir);
 	do {
+		// console.log('testing path', foundPath);
 		if (fs.existsSync(foundPath)) {
 			return foundPath;
 		}
 		var prevDir = dir;
 		dir = path.normalize(path.join(dir, '..'));
-		foundPath = path.join(dir, name);
+		foundPath = path.join(dir, pathname);
 	} while (dir !== prevDir);
-	console.error('could not find', pathname);
+	console.error('could not find', pathname, 'base dir', basedir);
 	return null;
 }
 
@@ -45,8 +46,18 @@ function serveStaticHtml(pathname, response) {
 	response.end();
 }
 
+function serveStaticSvg(pathname, response) {
+	response.writeHead(200, {
+		"Content-Type": 'image/svg+xml'
+	});
+	response.write(readFileSync(pathname));
+	response.end();
+}
+
 function isJsUnityFile(pathname) {
-	if (/jsunity-\d\.\d.js$/i.test(pathname)) {
+	if (/jsunity-\d\.\d.js$/i.test(pathname) || 
+		/jsunity\.js$/i.test(pathname) ||
+		/jsunityLogging\.js$/i.test(pathname)) {
 		console.log(pathname, 'is jsunity file');
 		return true;
 	}
@@ -81,3 +92,4 @@ function notFound(response) {
 exports.init = init;
 exports.serveStaticHtml = serveStaticHtml;
 exports.serveStaticJs = serveStaticJs;
+exports.serveStaticSvg = serveStaticSvg;

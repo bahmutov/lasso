@@ -38,7 +38,7 @@ var app = connect()
 		if (htmlRegex.test(pathname)) {
 			handlers.serveStaticHtml(pathname, res);
 		} else if (svgRegex.test(pathname)) {
-			// todo serve svg
+			handlers.serveStaticSvg(pathname, res);
 		} else if (jsRegex.test(pathname)) {
 			handlers.serveStaticJs(pathname, res, options);
 		} else {

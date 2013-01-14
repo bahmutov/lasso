@@ -16,10 +16,21 @@ Install phantomjs (version 1.8 or higher is recommended), it should be in the pa
 1. Open examples\basic\foo.html in a browser. It should load foo.js, fooTests.js but report no coverage.
 2. From command line run lasso on foo.html
 
-	lasso foo.html
+	lasso-node foo.html
 
 Lasso starts a local webserver, starts phantomjs, runs the foo.html through the phantomjs.
 When phantomjs is asking for a .js file, lasso loads the js, instruments using *istanbul* and serves the instrumented version. Thus javascript code coverage is computed absolutely transparently to the testing code. After phantomjs is done, it saved the coverage object into a json file. Node then creates several reports: console and html. The html reports are very detailed, please take a look at them inside folder **cover**.
+
+
+Options
+-------
+
+Use -h or --help command line switch to see all available options
+
+Main ones:
+
++ --jsunity - filters a few jsunity library js files to avoid instrumenting 3rd party tools
++ --serve - start the webserver and wait, you can then open http://localhost:8888/foo.html in any browser to see what phantomjs is running.
 
 Contact
 -------
