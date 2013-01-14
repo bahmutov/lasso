@@ -1,0 +1,27 @@
+<html>
+<head>
+	<title>Basic foo 'testing' example</title>
+	<script src="../foo.js"></script>
+	<script src="fooTests.js"></script>
+</head>
+<body>
+<h2>Lasso basic example (code is one folder up)</h2>
+<p>
+This page shows basic javascript code function <strong>foo</strong> loaded into global namespace from foo.js. Several assertions <i>testing</i> foo are loaded from fooTests.js. The page should display no errors, and if foo.js and fooTests.js are instrumented, the results should be in a global object <strong>__coverage__<strong>.
+
+<script>
+	useFoo(); // runs the assertions loaded from fooTests.js
+
+	var div = document.createElement('div');
+	if (typeof __coverage__ === 'undefined') {
+		var msg = 'there is no coverage object, the code was not instrumented';
+		console.log(msg);
+		div.innerText = msg;
+	} else {
+		div.innerText = JSON.stringify(__coverage__);
+		console.log('coverage info appended to the body of the document');
+	}
+	document.body.appendChild(div);
+</script>
+</body>
+</html>

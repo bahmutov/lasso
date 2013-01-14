@@ -14,11 +14,25 @@ function init(options) {
 
 
 function fullPath(pathname) {
-	return path.join(basedir, pathname);
+	var dir = basedir;
+	var name = path.basename(pathname);
+	var foundPath = path.join(dir, name);
+	do {
+		if (fs.existsSync(foundPath)) {
+			return foundPath;
+		}
+		var prevDir = dir;
+		dir = path.normalize(path.join(dir, '..'));
+		foundPath = path.join(dir, name);
+	} while (dir !== prevDir);
+	console.error('could not find', pathname);
+	return null;
 }
 
 function readFileSync(pathname) {
-	var content = fs.readFileSync(fullPath(pathname), 'utf-8');
+	var filename = fullPath(pathname);
+	console.log('serving file', filename, 'for path', pathname);
+	var content = fs.readFileSync(filename, 'utf-8');
 	console.assert(content, 'could not read', pathname);
 	return content;
 }

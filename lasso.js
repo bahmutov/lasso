@@ -33,7 +33,7 @@ var app = connect()
 	.use(connect.logger('dev'))
 	.use(function(req, res){
 		var pathname = url.parse(req.url).pathname;
-		console.log('serving', pathname);
+		console.log('serving url', req.url, 'pathname', pathname);
 
 		// todo What about json / images / other file types?
 		if (htmlRegex.test(pathname)) {
@@ -48,16 +48,16 @@ var app = connect()
   });
 
 var port = 8888;
+http.createServer(app).listen(port);
+console.log('server has started at port', port);
+
 var phantomRunnerFilename = path.join(lassoDir, 'src', 'basic_runner.js');
-var coverageFilename = 'coverage.json';
+var coverageFilename = path.join(process.cwd(), 'cover.json');
 
 var regexpQuote = require('regexp-quote');
 var separatorRegex = new RegExp(regexpQuote(path.sep), 'g');
 var pageUrl = 'http://localhost:' + port + '/' + page.replace(separatorRegex, '/');
 console.log('page url to load', pageUrl);
-
-http.createServer(app).listen(port);
-console.log('server has started');
 
 console.log('Opening in phantomjs page', pageUrl);
 console.log('output coverage filename', coverageFilename);
@@ -81,7 +81,7 @@ phantomjs.on('exit', function (code) {
   var collector = new istanbul.Collector();
 	collector.add(JSON.parse(fs.readFileSync(coverageFilename, 'utf8')));
 
-	var reportFolder = path.join(__dirname, 'cover');
+	var reportFolder = path.join(process.cwd(), 'cover');
 	var report = Report.create('html', {
 		dir: reportFolder,
 		verbose: false
@@ -91,6 +91,11 @@ phantomjs.on('exit', function (code) {
 
 	Report.create('text').writeReport(collector);
 	Report.create('text-summary').writeReport(collector);
+
+	Report.create('text', {
+		file: 'cover.txt'
+	}).writeReport(collector);
+	console.log('saved coverage text report to', path.join(process.cwd(), 'cover.txt'));
 
   process.exit(0);
 });
