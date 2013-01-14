@@ -23,6 +23,14 @@ if (system.args.length !== 3) {
 
 var page = require('webpage').create();
 
+// monitoring requests
+page.onResourceRequested = function (request) {
+    console.log('phantomjs request ' + JSON.stringify(request, undefined, 2));
+};
+page.onResourceReceived = function (response) {
+    console.log('phantomjs receive ' + JSON.stringify(response, undefined, 2));
+};
+
 // Route "console.log()" calls from within the Page context to the main Phantom context (i.e. current "this")
 page.onConsoleMessage = function(msg) {
     console.log(msg);

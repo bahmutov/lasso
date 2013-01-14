@@ -30,10 +30,11 @@ function fullPath(pathname) {
 	return null;
 }
 
-function readFileSync(pathname) {
+function readFileSync(pathname, encoding) {
+	encoding = encoding || 'utf-8';
 	var filename = fullPath(pathname);
 	console.log('serving file', filename, 'for path', pathname);
-	var content = fs.readFileSync(filename, 'utf-8');
+	var content = fs.readFileSync(filename, encoding);
 	console.assert(content, 'could not read', pathname);
 	return content;
 }
@@ -41,6 +42,14 @@ function readFileSync(pathname) {
 function serveStaticHtml(pathname, response) {
 	response.writeHead(200, {
 		"Content-Type": 'text/html'
+	});
+	response.write(readFileSync(pathname));
+	response.end();
+}
+
+function serveStaticCss(pathname, response) {
+	response.writeHead(200, {
+		"Content-Type": 'text/css'
 	});
 	response.write(readFileSync(pathname));
 	response.end();
@@ -54,11 +63,27 @@ function serveStaticSvg(pathname, response) {
 	response.end();
 }
 
+function serveStaticImagePng(pathname, response) {
+	response.writeHead(200, {
+		"Content-Type": 'image/png'
+	});
+	response.write(readFileSync(pathname, 'binary'), 'binary');
+	response.end();
+}
+
 function isJsUnityFile(pathname) {
 	if (/jsunity-\d\.\d.js$/i.test(pathname) || 
 		/jsunity\.js$/i.test(pathname) ||
 		/jsunityLogging\.js$/i.test(pathname)) {
 		console.log(pathname, 'is jsunity file');
+		return true;
+	}
+	return false;
+}
+
+function isJsDojoFile(pathname) {
+	if (/dojo1\.8\.0/i.test(pathname)) {
+		console.log(pathname, 'is dojo file');
 		return true;
 	}
 	return false;
@@ -72,6 +97,8 @@ function serveStaticJs(pathname, response, options) {
 	var filename = fullPath(pathname);
 	var code = readFileSync(pathname);
 	if (options.jsunity && isJsUnityFile(pathname)) {
+		response.write(code);
+	} else if (options.doh && isJsDojoFile(pathname)) {
 		response.write(code);
 	} else {
 		var instrumented = instrumenter.instrumentSync(code, filename);
@@ -93,3 +120,5 @@ exports.init = init;
 exports.serveStaticHtml = serveStaticHtml;
 exports.serveStaticJs = serveStaticJs;
 exports.serveStaticSvg = serveStaticSvg;
+exports.serveStaticImagePng = serveStaticImagePng;
+exports.serveStaticCss = serveStaticCss;

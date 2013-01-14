@@ -16,6 +16,8 @@ var Report = istanbul.Report;
 var htmlRegex = /\.html$/;
 var jsRegex = /\.js$/;
 var svgRegex = /\.svg$/;
+var imagePngRegex = /\.png$/;
+var cssRegex = /\.css$/;
 
 console.assert(options.page, 'missing page filename');
 console.log('test page', options.page);
@@ -41,6 +43,10 @@ var app = connect()
 			handlers.serveStaticSvg(pathname, res);
 		} else if (jsRegex.test(pathname)) {
 			handlers.serveStaticJs(pathname, res, options);
+		} else if (imagePngRegex.test(pathname)) {
+			handlers.serveStaticImagePng(pathname, res);
+		} else if (cssRegex.test(pathname)) {
+			handlers.serveStaticCss(pathname, res);
 		} else {
     	res.end('ERROR: handler not defined for ' + pathname + '\n');
     }
