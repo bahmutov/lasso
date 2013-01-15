@@ -109,6 +109,14 @@ function isJsQUnitFile(pathname) {
 	return false;
 }
 
+function isMochaFile(pathname) {
+	if (/mocha/i.test(pathname)) {
+		console.log(pathname, 'is mocha file');
+		return true;
+	}
+	return false;
+}
+
 function serveStaticJs(pathname, response, options) {
 	options = options || {};
 	response.writeHead(200, {
@@ -129,6 +137,9 @@ function serveStaticJs(pathname, response, options) {
 			needInstrument = false;
 		}
 		if (options.qunit && isJsQUnitFile(pathname)) {
+			needInstrument = false;
+		}
+		if (options.mocha && isMochaFile(pathname)) {
 			needInstrument = false;
 		}
 	}

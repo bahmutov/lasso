@@ -16,6 +16,7 @@ function options() {
 			doh: false,
 			jasmine: false,
 			qunit: false,
+			mocha: false,
 			instrument: true,
 			verbose: false
 		})
@@ -27,6 +28,7 @@ function options() {
 		.boolean('doh').describe('doh', 'filter Dojo DOH libraries')
 		.boolean('jasmine').describe('jasmine', 'filter Jasmine library js files')
 		.boolean('qunit').describe('qunit', 'filter qunit library js files')
+		.boolean('mocha').describe('mocha', 'filter mocha library js files')
 		.boolean('basic').describe('basic', 'use basic phantomjs runner')
 		.boolean('instrument').describe('instrument', 'instrument the JS code for coverage')
 		.boolean('verbose').describe('verbose', 'verbose phantomjs requests')
