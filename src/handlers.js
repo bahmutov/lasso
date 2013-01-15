@@ -125,6 +125,14 @@ function isMochaFile(pathname) {
 	return false;
 }
 
+function isPavlovFile(pathname) {
+	if (/pavlov\.js$/i.test(pathname)) {
+		console.log(pathname, 'is pavlov file');
+		return true;
+	}
+	return false;
+}
+
 function serveStaticJs(pathname, response, options) {
 	options = options || {};
 	response.writeHead(200, {
@@ -148,6 +156,9 @@ function serveStaticJs(pathname, response, options) {
 			needInstrument = false;
 		}
 		if (options.mocha && isMochaFile(pathname)) {
+			needInstrument = false;
+		}
+		if (options.pavlov && (isPavlovFile(pathname) || isJsQUnitFile(pathname))) {
 			needInstrument = false;
 		}
 	}
