@@ -4,17 +4,21 @@ var path = require('path');
 var istanbul = require('istanbul');
 var instrumenter = new istanbul.Instrumenter();
 
-var basedir = __dirname;
+var config = {
+	basedir: __dirname,
+	instrument: true
+};
+
 function init(options) {
 	options = options || {};
-	basedir = options.basedir || __dirname;
+	config.basedir = options.basedir || config.basedir;
+	config.instrument = options.instrument || config.instrument;
 
-	console.log('basedir for handlers', basedir);
+	console.log('basedir for handlers', config.basedir);
 }
 
-
 function fullPath(pathname) {
-	var dir = path.join(basedir, path.dirname(pathname));
+	var dir = path.join(config.basedir, path.dirname(pathname));
 	var foundPath = path.join(dir, pathname);
 	// console.log('looking for', pathname, 'basedir', basedir);
 	do {
@@ -26,7 +30,7 @@ function fullPath(pathname) {
 		dir = path.normalize(path.join(dir, '..'));
 		foundPath = path.join(dir, pathname);
 	} while (dir !== prevDir);
-	console.error('could not find', pathname, 'base dir', basedir);
+	console.error('could not find', pathname, 'base dir', config.basedir);
 	return null;
 }
 
@@ -96,13 +100,21 @@ function serveStaticJs(pathname, response, options) {
 	});
 	var filename = fullPath(pathname);
 	var code = readFileSync(pathname);
-	if (options.jsunity && isJsUnityFile(pathname)) {
-		response.write(code);
-	} else if (options.doh && isJsDojoFile(pathname)) {
-		response.write(code);
-	} else {
+
+	var needInstrument = config.instrument;
+	if (needInstrument) {
+		if (options.jsunity && isJsUnityFile(pathname)) {
+			needInstrument = false;
+		} else if (options.doh && isJsDojoFile(pathname)) {
+			needInstrument = false;
+		}
+	}
+
+	if (needInstrument) {
 		var instrumented = instrumenter.instrumentSync(code, filename);
 		response.write(instrumented);
+	} else {
+		response.write(code);
 	}
 	response.end();
 }

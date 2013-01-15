@@ -13,7 +13,8 @@ function options() {
 			serve: false,
 			basic: true,
 			jsunity: false,
-			doh: false
+			doh: false,
+			instrument: true
 		})
 		.alias('h', 'help')
 		.alias('c', 'cover').string("cover").describe("cover", "output folder with coverage")
@@ -23,6 +24,7 @@ function options() {
 		.boolean('jsunity').describe('jsunity', 'unit tests follow jsunity rules')
 		.boolean('doh').describe('doh', 'unit tests follow Dojo DOH syntax (including define)')
 		.boolean('basic').describe('basic', 'use basic phantomjs runner')
+		.boolean('instrument').describe('instrument', 'instrument the JS code for coverage')
 		.argv;
 
 	args.lassoDir = path.dirname(process.argv[1]);
