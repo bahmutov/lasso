@@ -93,6 +93,14 @@ function isJsDojoFile(pathname) {
 	return false;
 }
 
+function isJsJasmineFile(pathname) {
+	if (/jasmine/i.test(pathname)) {
+		console.log(pathname, 'is jasmine file');
+		return true;
+	}
+	return false;
+}
+
 function serveStaticJs(pathname, response, options) {
 	options = options || {};
 	response.writeHead(200, {
@@ -105,7 +113,11 @@ function serveStaticJs(pathname, response, options) {
 	if (needInstrument) {
 		if (options.jsunity && isJsUnityFile(pathname)) {
 			needInstrument = false;
-		} else if (options.doh && isJsDojoFile(pathname)) {
+		}
+		if (options.doh && isJsDojoFile(pathname)) {
+			needInstrument = false;
+		}
+		if (options.jasmine && isJsJasmineFile(pathname)) {
 			needInstrument = false;
 		}
 	}

@@ -80,7 +80,11 @@ if (!options.serve) {
 	console.log('output coverage filename', coverageFilename);
 
 	var spawn = require('child_process').spawn;
-	var phantomjs = spawn('phantomjs', [phantomRunnerFilename, pageUrl, coverageFilename]);
+	var phantomArguments = [phantomRunnerFilename, pageUrl, coverageFilename];
+	if (options.verbose) {
+		phantomArguments.push('--verbose');
+	}
+	var phantomjs = spawn('phantomjs', phantomArguments);
 
 	phantomjs.stdout.on('data', function (data) {
 	  console.log('phantomjs: ' + data);

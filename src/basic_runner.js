@@ -16,20 +16,23 @@ function waitFor(onReady, timeOutMillis) {
 };
 
 
-if (system.args.length !== 3) {
+if (system.args.length < 3) {
     console.log('Usage: simple_runner.js URL outputCoverageFilename.json');
     phantom.exit(1);
 }
 
 var page = require('webpage').create();
+var verbose = ((system.args.length > 3) && (system.args[3] === '--verbose'));
 
-// monitoring requests
-page.onResourceRequested = function (request) {
-    console.log('phantomjs request ' + JSON.stringify(request, undefined, 2));
-};
-page.onResourceReceived = function (response) {
-    console.log('phantomjs receive ' + JSON.stringify(response, undefined, 2));
-};
+if (verbose) {
+    // monitoring requests
+    page.onResourceRequested = function (request) {
+        console.log('phantomjs request ' + JSON.stringify(request, undefined, 2));
+    };
+    page.onResourceReceived = function (response) {
+        console.log('phantomjs receive ' + JSON.stringify(response, undefined, 2));
+    };
+}
 
 // Route "console.log()" calls from within the Page context to the main Phantom context (i.e. current "this")
 page.onConsoleMessage = function(msg) {
