@@ -101,6 +101,14 @@ function isJsJasmineFile(pathname) {
 	return false;
 }
 
+function isJsQUnitFile(pathname) {
+	if (/qunit/i.test(pathname)) {
+		console.log(pathname, 'is qunit file');
+		return true;
+	}
+	return false;
+}
+
 function serveStaticJs(pathname, response, options) {
 	options = options || {};
 	response.writeHead(200, {
@@ -118,6 +126,9 @@ function serveStaticJs(pathname, response, options) {
 			needInstrument = false;
 		}
 		if (options.jasmine && isJsJasmineFile(pathname)) {
+			needInstrument = false;
+		}
+		if (options.qunit && isJsQUnitFile(pathname)) {
 			needInstrument = false;
 		}
 	}

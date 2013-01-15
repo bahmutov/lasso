@@ -15,17 +15,18 @@ function options() {
 			jsunity: false,
 			doh: false,
 			jasmine: false,
+			qunit: false,
 			instrument: true,
 			verbose: false
 		})
 		.alias('h', 'help')
 		.alias('c', 'cover').string("cover").describe("cover", "output folder with coverage")
-		.boolean('colors')
-		.describe('colors', 'use terminal colors for output, might not work with continuous build servers')
+		.boolean('colors').describe('colors', 'use terminal colors, might not work with continuous build')
 		.boolean('server').describe('serve', 'start webserver, remain running, useful for manual debugging')
-		.boolean('jsunity').describe('jsunity', 'unit tests follow jsunity rules')
-		.boolean('doh').describe('doh', 'unit tests follow Dojo DOH syntax (including define)')
-		.boolean('jasmine').describe('jasmine', 'filder Jasmine library js files')
+		.boolean('jsunity').describe('jsunity', 'filter jsUnity libraries')
+		.boolean('doh').describe('doh', 'filter Dojo DOH libraries')
+		.boolean('jasmine').describe('jasmine', 'filter Jasmine library js files')
+		.boolean('qunit').describe('qunit', 'filter qunit library js files')
 		.boolean('basic').describe('basic', 'use basic phantomjs runner')
 		.boolean('instrument').describe('instrument', 'instrument the JS code for coverage')
 		.boolean('verbose').describe('verbose', 'verbose phantomjs requests')
