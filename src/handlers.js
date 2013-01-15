@@ -59,6 +59,14 @@ function serveStaticCss(pathname, response) {
 	response.end();
 }
 
+function serveStaticJson(pathname, response) {
+	response.writeHead(200, {
+		"Content-Type": 'application/json'
+	});
+	response.write(readFileSync(pathname));
+	response.end();
+}
+
 function serveStaticSvg(pathname, response) {
 	response.writeHead(200, {
 		"Content-Type": 'image/svg+xml'
@@ -168,3 +176,4 @@ exports.serveStaticJs = serveStaticJs;
 exports.serveStaticSvg = serveStaticSvg;
 exports.serveStaticImagePng = serveStaticImagePng;
 exports.serveStaticCss = serveStaticCss;
+exports.serveStaticJson = serveStaticJson;

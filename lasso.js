@@ -18,6 +18,7 @@ var jsRegex = /\.js$/;
 var svgRegex = /\.svg$/;
 var imagePngRegex = /\.png$/;
 var cssRegex = /\.css$/;
+var jsonRegex = /\.json$/;
 
 console.assert(options.page, 'missing page filename');
 console.log('test page', options.page);
@@ -47,6 +48,8 @@ var app = connect()
 			handlers.serveStaticImagePng(pathname, res);
 		} else if (cssRegex.test(pathname)) {
 			handlers.serveStaticCss(pathname, res);
+		} else if (jsonRegex.test(pathname)) {
+			handlers.serveStaticJson(pathname, res);
 		} else {
     	res.end('ERROR: handler not defined for ' + pathname + '\n');
     }
