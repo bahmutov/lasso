@@ -19,7 +19,8 @@ function options() {
 			mocha: false,
 			pavlov: false,
 			instrument: true,
-			verbose: false
+			verbose: false,
+			port: 8888
 		})
 		.alias('h', 'help')
 		.alias('c', 'cover').string("cover").describe("cover", "output folder with coverage")
@@ -34,6 +35,7 @@ function options() {
 		.boolean('basic').describe('basic', 'use basic phantomjs runner')
 		.boolean('instrument').describe('instrument', 'instrument the JS code for coverage')
 		.boolean('verbose').describe('verbose', 'verbose phantomjs requests')
+		.describe('port', 'port to use')
 		.argv;
 
 	args.lassoDir = path.dirname(process.argv[1]);

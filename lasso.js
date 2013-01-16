@@ -55,9 +55,9 @@ var app = connect()
     }
   });
 
-var port = 8888;
-http.createServer(app).listen(port);
-console.log('server has started at port', port);
+console.assert(options.port > 100, 'invalid port', options.port);
+http.createServer(app).listen(options.port);
+console.log('server has started at port', options.port);
 
 if (!options.serve) {
 	console.assert(options.lassoDir, 'missing lasso dir');
@@ -76,7 +76,7 @@ if (!options.serve) {
 
 	var regexpQuote = require('regexp-quote');
 	var separatorRegex = new RegExp(regexpQuote(path.sep), 'g');
-	var pageUrl = 'http://localhost:' + port + '/' + options.page.replace(separatorRegex, '/');
+	var pageUrl = 'http://localhost:' + options.port + '/' + options.page.replace(separatorRegex, '/');
 	console.log('page url to load', pageUrl);
 
 	console.log('Opening in phantomjs page', pageUrl);
