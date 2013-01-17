@@ -1,119 +1,55 @@
 var fs = require('fs');
 var path = require('path');
 var fileFinder = require('./fileFinder');
+var _ = require('lodash');
 
 var istanbul = require('istanbul');
 var instrumenter = new istanbul.Instrumenter();
 
 var config = {
-	instrument: true
+	instrument: true,
+	filters: [
+		/jsunity-\d\.\d.js$/i, 
+		/jsunity\.js$/i, 
+		/jsunityLogging\.js$/i,
+		/dojo1\.8\.0/i,
+		/jasmine/i,
+		/qunit/i,
+		/mocha/i,
+		/pavlov\.js$/i,
+		/sinon\.js$/i
+	]
 };
 
 function init(options) {
 	options = options || {};
 	config.instrument = options.instrument || config.instrument;
+	config.filters = options.filters || config.filters;
 	fileFinder.init(options);
 }
 
-function serveStaticHtml(pathname, response) {
+function serveStaticFile(contentType, format, pathname, response) {
+	console.assert(contentType, 'undefined contentType');
+	console.assert(format, 'undefined format');
+	console.assert(format === 'utf-8' || format === 'binary', 'wrong format', format);
+	console.assert(pathname, 'undefined pathname');
+	console.assert(response, 'undefined response');
+
 	response.writeHead(200, {
-		"Content-Type": 'text/html'
+		"Content-Type": contentType
 	});
-	response.write(fileFinder.readFileSync(pathname));
+	response.write(fileFinder.readFileSync(pathname, format), format);
 	response.end();
 }
 
-function serveStaticCss(pathname, response) {
-	response.writeHead(200, {
-		"Content-Type": 'text/css'
+function isFilteredJs(pathname) {
+	console.assert(pathname, 'undefined pathname to check');
+	return config.filters.some(function (filter) {
+		return filter.test(pathname);
 	});
-	response.write(fileFinder.readFileSync(pathname));
-	response.end();
 }
 
-function serveStaticJson(pathname, response) {
-	response.writeHead(200, {
-		"Content-Type": 'application/json'
-	});
-	response.write(fileFinder.readFileSync(pathname));
-	response.end();
-}
-
-function serveStaticSvg(pathname, response) {
-	response.writeHead(200, {
-		"Content-Type": 'image/svg+xml'
-	});
-	response.write(fileFinder.readFileSync(pathname));
-	response.end();
-}
-
-function serveStaticImagePng(pathname, response) {
-	response.writeHead(200, {
-		"Content-Type": 'image/png'
-	});
-	response.write(fileFinder.readFileSync(pathname, 'binary'), 'binary');
-	response.end();
-}
-
-function isJsUnityFile(pathname) {
-	if (/jsunity-\d\.\d.js$/i.test(pathname) || 
-		/jsunity\.js$/i.test(pathname) ||
-		/jsunityLogging\.js$/i.test(pathname)) {
-		console.log(pathname, 'is jsunity file');
-		return true;
-	}
-	return false;
-}
-
-function isJsDojoFile(pathname) {
-	if (/dojo1\.8\.0/i.test(pathname)) {
-		console.log(pathname, 'is dojo file');
-		return true;
-	}
-	return false;
-}
-
-function isJsJasmineFile(pathname) {
-	if (/jasmine/i.test(pathname)) {
-		console.log(pathname, 'is jasmine file');
-		return true;
-	}
-	return false;
-}
-
-function isJsQUnitFile(pathname) {
-	if (/qunit/i.test(pathname)) {
-		console.log(pathname, 'is qunit file');
-		return true;
-	}
-	return false;
-}
-
-function isMochaFile(pathname) {
-	if (/mocha/i.test(pathname)) {
-		console.log(pathname, 'is mocha file');
-		return true;
-	}
-	return false;
-}
-
-function isPavlovFile(pathname) {
-	if (/pavlov\.js$/i.test(pathname)) {
-		console.log(pathname, 'is pavlov file');
-		return true;
-	}
-	return false;
-}
-
-function isSinonFile(pathname) {
-	if (/sinon\.js$/i.test(pathname)) {
-		console.log(pathname, 'is sinon file');
-		return true;
-	}
-	return false;
-}
-
-function serveStaticJs(pathname, response, options) {
+function serveJs(pathname, response, options) {
 	options = options || {};
 	response.writeHead(200, {
 		"Content-Type": 'application/javascript'
@@ -123,25 +59,8 @@ function serveStaticJs(pathname, response, options) {
 
 	var needInstrument = config.instrument;
 	if (needInstrument) {
-		if (options.jsunity && isJsUnityFile(pathname)) {
-			needInstrument = false;
-		}
-		if (options.doh && isJsDojoFile(pathname)) {
-			needInstrument = false;
-		}
-		if (options.jasmine && isJsJasmineFile(pathname)) {
-			needInstrument = false;
-		}
-		if (options.qunit && isJsQUnitFile(pathname)) {
-			needInstrument = false;
-		}
-		if (options.mocha && isMochaFile(pathname)) {
-			needInstrument = false;
-		}
-		if (options.pavlov && (isPavlovFile(pathname) || isJsQUnitFile(pathname))) {
-			needInstrument = false;
-		}
-		if (options.sinon && (isSinonFile(pathname) || isJsQUnitFile(pathname))) {
+		if (isFilteredJs(pathname)) {
+			console.log(pathname, 'should NOT be instrumented');
 			needInstrument = false;
 		}
 	}
@@ -155,19 +74,10 @@ function serveStaticJs(pathname, response, options) {
 	response.end();
 }
 
-function notFound(response) {
-	console.log('404 handler');
-	response.writeHead(404, {
-		"Content-Type": 'text/plain'
-	});
-	response.write("Sorry, not found");
-	response.end();
-}
-
 exports.init = init;
-exports.serveStaticHtml = serveStaticHtml;
-exports.serveStaticJs = serveStaticJs;
-exports.serveStaticSvg = serveStaticSvg;
-exports.serveStaticImagePng = serveStaticImagePng;
-exports.serveStaticCss = serveStaticCss;
-exports.serveStaticJson = serveStaticJson;
+exports.serveStaticHtml = _.partial(serveStaticFile, 'text/html', 'utf-8');
+exports.serveStaticJs = serveJs;
+exports.serveStaticSvg = _.partial(serveStaticFile, 'image/svg+xml', 'utf-8');
+exports.serveStaticImagePng = _.partial(serveStaticFile, 'image/png', 'binary');;
+exports.serveStaticCss = _.partial(serveStaticFile, 'text/css', 'utf-8');
+exports.serveStaticJson = _.partial(serveStaticFile, 'application/json', 'utf-8');
