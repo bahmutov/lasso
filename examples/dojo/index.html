@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Dojo with a few assertions</title>
+    <link rel="stylesheet" href="lib/qunit.css">
+    <script>
+    var dojoConfig = {
+        isDebug: true,
+        async: true,
+        packages: [
+        {
+            name: "demo",
+            location: location.pathname.replace(/\/[^/]+$/, '') + '/demo'
+        },
+        {
+            name: "test",
+            location: location.pathname.replace(/\/[^/]+$/, '') + '/test'
+        }],
+        cacheBust: true
+    };
+    </script>
+</head>
+<body>
+    <div id="qunit"></div>
+    <script src="//ajax.googleapis.com/ajax/libs/dojo/1.8.0/dojo/dojo.js"></script>
+    <script src="lib/qunit.js"></script>
+    <script src="lib/sinon.js"></script>
+    <script>
+    console.log("dojo loaded", location.pathname);
+    require(["test/fooTests"]);
+    </script>
+</body>
+</html>
