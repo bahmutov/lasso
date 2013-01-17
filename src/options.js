@@ -18,6 +18,7 @@ function options() {
 			qunit: false,
 			mocha: false,
 			pavlov: false,
+			sinon: false,
 			instrument: true,
 			verbose: false,
 			port: 8888
@@ -32,6 +33,7 @@ function options() {
 		.boolean('qunit').describe('qunit', 'filter qunit library js files')
 		.boolean('mocha').describe('mocha', 'filter mocha library js files')
 		.boolean('pavlov').describe('pavlov', 'filter qunit and pavlov library js files')
+		.boolean('sinon').describe('sinon', 'filter qunit and sinon library js files')
 		.boolean('basic').describe('basic', 'use basic phantomjs runner')
 		.boolean('instrument').describe('instrument', 'instrument the JS code for coverage')
 		.boolean('verbose').describe('verbose', 'verbose phantomjs requests')

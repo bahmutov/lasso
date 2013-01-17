@@ -133,6 +133,14 @@ function isPavlovFile(pathname) {
 	return false;
 }
 
+function isSinonFile(pathname) {
+	if (/sinon\.js$/i.test(pathname)) {
+		console.log(pathname, 'is sinon file');
+		return true;
+	}
+	return false;
+}
+
 function serveStaticJs(pathname, response, options) {
 	options = options || {};
 	response.writeHead(200, {
@@ -159,6 +167,9 @@ function serveStaticJs(pathname, response, options) {
 			needInstrument = false;
 		}
 		if (options.pavlov && (isPavlovFile(pathname) || isJsQUnitFile(pathname))) {
+			needInstrument = false;
+		}
+		if (options.sinon && (isSinonFile(pathname) || isJsQUnitFile(pathname))) {
 			needInstrument = false;
 		}
 	}
