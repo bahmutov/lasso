@@ -1,53 +1,25 @@
 var fs = require('fs');
 var path = require('path');
+var fileFinder = require('./fileFinder');
 
 var istanbul = require('istanbul');
 var instrumenter = new istanbul.Instrumenter();
 
 var config = {
-	basedir: __dirname,
 	instrument: true
 };
 
 function init(options) {
 	options = options || {};
-	config.basedir = options.basedir || config.basedir;
 	config.instrument = options.instrument || config.instrument;
-
-	console.log('basedir for handlers', config.basedir);
-}
-
-function fullPath(pathname) {
-	var dir = path.join(config.basedir, path.dirname(pathname));
-	var foundPath = path.join(dir, pathname);
-	// console.log('looking for', pathname, 'basedir', basedir);
-	do {
-		// console.log('testing path', foundPath);
-		if (fs.existsSync(foundPath)) {
-			return foundPath;
-		}
-		var prevDir = dir;
-		dir = path.normalize(path.join(dir, '..'));
-		foundPath = path.join(dir, pathname);
-	} while (dir !== prevDir);
-	console.error('could not find', pathname, 'base dir', config.basedir);
-	return null;
-}
-
-function readFileSync(pathname, encoding) {
-	encoding = encoding || 'utf-8';
-	var filename = fullPath(pathname);
-	console.log('serving file', filename, 'for path', pathname);
-	var content = fs.readFileSync(filename, encoding);
-	console.assert(content, 'could not read', pathname);
-	return content;
+	fileFinder.init(options);
 }
 
 function serveStaticHtml(pathname, response) {
 	response.writeHead(200, {
 		"Content-Type": 'text/html'
 	});
-	response.write(readFileSync(pathname));
+	response.write(fileFinder.readFileSync(pathname));
 	response.end();
 }
 
@@ -55,7 +27,7 @@ function serveStaticCss(pathname, response) {
 	response.writeHead(200, {
 		"Content-Type": 'text/css'
 	});
-	response.write(readFileSync(pathname));
+	response.write(fileFinder.readFileSync(pathname));
 	response.end();
 }
 
@@ -63,7 +35,7 @@ function serveStaticJson(pathname, response) {
 	response.writeHead(200, {
 		"Content-Type": 'application/json'
 	});
-	response.write(readFileSync(pathname));
+	response.write(fileFinder.readFileSync(pathname));
 	response.end();
 }
 
@@ -71,7 +43,7 @@ function serveStaticSvg(pathname, response) {
 	response.writeHead(200, {
 		"Content-Type": 'image/svg+xml'
 	});
-	response.write(readFileSync(pathname));
+	response.write(fileFinder.readFileSync(pathname));
 	response.end();
 }
 
@@ -79,7 +51,7 @@ function serveStaticImagePng(pathname, response) {
 	response.writeHead(200, {
 		"Content-Type": 'image/png'
 	});
-	response.write(readFileSync(pathname, 'binary'), 'binary');
+	response.write(fileFinder.readFileSync(pathname, 'binary'), 'binary');
 	response.end();
 }
 
@@ -146,8 +118,8 @@ function serveStaticJs(pathname, response, options) {
 	response.writeHead(200, {
 		"Content-Type": 'application/javascript'
 	});
-	var filename = fullPath(pathname);
-	var code = readFileSync(pathname);
+	var filename = fileFinder.fullPath(pathname);
+	var code = fileFinder.readFileSync(pathname);
 
 	var needInstrument = config.instrument;
 	if (needInstrument) {
