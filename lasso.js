@@ -37,7 +37,7 @@ var app = connect()
 		var pathname = url.parse(req.url).pathname;
 		console.log('serving url', req.url, 'pathname', pathname);
 		if (pathname === '/') {
-			pathname = 'index.html';
+			pathname = options.page;
 		}
 
 		// todo What about json / images / other file types?
