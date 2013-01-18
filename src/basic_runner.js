@@ -1,18 +1,20 @@
 var system = require('system');
 var fs = require('fs');
 
+var done = false;
+
 function waitFor(onReady, timeOutMillis) {
     var maxtimeOutMillis = timeOutMillis ? timeOutMillis : 3001, //< Default Max Timout is 3s
         start = new Date().getTime(),
         interval = setInterval(function() {
-            if ( (new Date().getTime() - start < maxtimeOutMillis)) {
+            if (!done && (new Date().getTime() - start < maxtimeOutMillis)) {
             } else {
                 // Condition fulfilled (timeout and/or condition is 'true')
                 console.log("'waitFor()' finished in " + (new Date().getTime() - start) + "ms.");
                 typeof(onReady) === "string" ? eval(onReady) : onReady(); //< Do what it's supposed to do once the condition is fulfilled
                 clearInterval(interval); //< Stop this interval
             }
-        }, 100); //< repeat check every 250ms
+        }, 25); //< repeat check every N ms
 };
 
 
@@ -39,11 +41,25 @@ page.onConsoleMessage = function(msg) {
     console.log(msg);
 };
 
+page.onInitialized = function () {
+    console.log('page.onInitialized');
+    var testReporting = 'testReporting.js';
+    var injected = page.injectJs(testReporting);
+    console.assert(injected, 'could not inject into page', testReporting);
+};
+
+page.onCallback = function(data) {
+    console.assert(data, 'null data from page');
+    console.log('TEST RESULTS: ' + data);
+    done = true;
+};
+
 page.open(system.args[1], function(status){
     if (status !== "success") {
         console.log("Unable to access network");
         phantom.exit(1);
     } else {
+
         waitFor(function(){
             var coverage = page.evaluate(function(){
                 return __coverage__;

@@ -1,6 +1,6 @@
 {
   "name": "lasso-node",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "JavaScript widget and page unit testing with on the fly instrumentation",
   "author": "Gleb Bahmutov <gleb.bahmutov@gmail.com>",
   "repository": {
