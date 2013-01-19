@@ -21,7 +21,8 @@ function options() {
 			sinon: false,
 			instrument: true,
 			verbose: false,
-			port: 8888
+			port: 8888,
+			timeout: 3
 		})
 		.alias('h', 'help')
 		.alias('c', 'cover').string("cover").describe("cover", "output folder with coverage")
@@ -38,6 +39,7 @@ function options() {
 		.boolean('instrument').describe('instrument', 'instrument the JS code for coverage')
 		.boolean('verbose').describe('verbose', 'verbose phantomjs requests')
 		.describe('port', 'port to use')
+		.describe('timeout', 'phantomjs page testing wait timeout, seconds')
 		.argv;
 
 	args.lassoDir = path.dirname(process.argv[1]);

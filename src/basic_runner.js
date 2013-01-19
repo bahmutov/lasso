@@ -1,6 +1,7 @@
 var system = require('system');
 var fs = require('fs');
-
+var options = require('./phantomjsArguments').run(system.args);
+console.log('options', JSON.stringify(options));
 var done = false;
 
 function waitFor(onReady, timeOutMillis) {
@@ -16,7 +17,6 @@ function waitFor(onReady, timeOutMillis) {
             }
         }, 25); //< repeat check every N ms
 };
-
 
 if (system.args.length < 3) {
     console.log('Usage: simple_runner.js URL outputCoverageFilename.json');
