@@ -90,6 +90,10 @@ if (!options.serve) {
 	if (options.verbose) {
 		phantomArguments.push('--verbose');
 	}
+	if (options.timeout) {
+		phantomArguments.push('--timeout');
+		phantomArguments.push(options.timeout);
+	}
 	var phantomjs = spawn('phantomjs', phantomArguments);
 
 	phantomjs.stdout.on('data', function (data) {

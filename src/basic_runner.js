@@ -2,10 +2,13 @@ var system = require('system');
 var fs = require('fs');
 var options = require('./phantomjsArguments').run(system.args);
 console.log('options', JSON.stringify(options));
+
+options.timeout = options.timeout || 3; // seconds
+
 var done = false;
 
-function waitFor(onReady, timeOutMillis) {
-    var maxtimeOutMillis = timeOutMillis ? timeOutMillis : 3001, //< Default Max Timout is 3s
+function waitFor(onReady, timeOutSeconds) {
+    var maxtimeOutMillis = timeOutSeconds ? timeOutSeconds * 1000 : 3001, //< Default Max Timout is 3s
         start = new Date().getTime(),
         interval = setInterval(function() {
             if (!done && (new Date().getTime() - start < maxtimeOutMillis)) {
@@ -70,6 +73,6 @@ page.open(system.args[1], function(status){
             fs.write(filename, JSON.stringify(coverage), 'w');
             console.log('wrote coverage to', filename);
             phantom.exit(0);
-        });
+        }, options.timeout);
     }
 });

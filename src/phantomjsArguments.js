@@ -29,6 +29,6 @@ function run(commandLine) {
 }
 
 if (module && module.exports) {
-	console.log('module =', module);
+	// console.log('module =', module);
 	module.exports.run = run;
 }
