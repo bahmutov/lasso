@@ -16,6 +16,7 @@
 <script>
 	console.assert(jsUnity, 'jsunity not defined');
 	console.log(JSON.stringify(TestSuite));
+
 	var results = jsUnity.run(TestSuite);
 	console.assert(results, 'could not get test results');
 
