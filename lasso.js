@@ -15,13 +15,13 @@ var istanbul = require('istanbul');
 var Report = istanbul.Report;
 
 console.assert(options.page, 'missing page filename');
-console.log('test page', options.page);
 options.page = path.resolve(process.cwd(), options.page);
+options.basedir = path.dirname(options.page);
 
 // set base folder to be the page's immediate folder
 // then the page itself would be just its own file name
 handlers.init({
-	basedir: path.dirname(options.page)
+	basedir: options.basedir
 });
 options.page = path.basename(options.page);
 
@@ -142,17 +142,18 @@ if (!options.serve) {
 		console.log('saved coverage text report to', path.join(process.cwd(), 'cover.txt'));
 
 		if (options.untested) {
-  		var untested = require('untested');
+			var full = path.join(options.basedir, options.page);
+	  		var untested = require('untested');
 
-  		var coverageData = collector.getFinalCoverage();
-  		var coverageSummary = untested.getCoverageSummary(coverageData);
-  		console.assert(coverageSummary, 'could not get coverage summary from\n', 
-  			JSON.stringify(coverageData, null, 2));
-  		untested.update({
-  			test: options.page, 
-  			coverage: coverageSummary
-  		});
-  	}
+	  		var coverageData = collector.getFinalCoverage();
+	  		var coverageSummary = untested.getCoverageSummary(coverageData);
+	  		console.assert(coverageSummary, 'could not get coverage summary from\n', 
+	  			JSON.stringify(coverageData, null, 2));
+	  		untested.update({
+	  			test: full, 
+	  			coverage: coverageSummary
+	  		});
+	  	}
 
 		process.exit(0);
 	});
