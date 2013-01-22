@@ -2,6 +2,7 @@
 
 var options = require('./src/options').run();
 
+var _ = require('lodash');
 var connect = require('connect');
 var fs = require('fs');
 var http = require('http');
@@ -13,13 +14,6 @@ var handlers = require('./src/handlers');
 var istanbul = require('istanbul');
 var Report = istanbul.Report;
 
-var htmlRegex = /\.html$/;
-var jsRegex = /\.js$/;
-var svgRegex = /\.svg$/;
-var imagePngRegex = /\.png$/;
-var cssRegex = /\.css$/;
-var jsonRegex = /\.json$/;
-
 console.assert(options.page, 'missing page filename');
 console.log('test page', options.page);
 
@@ -30,33 +24,58 @@ handlers.init({
 });
 options.page = path.basename(options.page);
 
-var app = connect()
-	.use(connect.favicon())
-	.use(connect.logger('dev'))
-	.use(function(req, res){
-		var pathname = url.parse(req.url).pathname;
-		console.log('serving url', req.url, 'pathname', pathname);
-		if (pathname === '/') {
-			pathname = options.page;
-		}
+var handlersMap = [
+{ 
+	regex: /\.html$/,
+	handler: handlers.serveStaticHtml
+},
+{
+	regex: /\.svg$/,
+	handler: handlers.serveStaticSvg
+},
+{ 
+	regex: /\.js$/, 
+	handler: handlers.serveStaticJs
+},
+{ 
+	regex: /\.png$/, 
+	handler: handlers.serveStaticImagePng
+},
+{
+	regex: /\.css$/,
+	handler: handlers.serveStaticCss
+},
+{
+	regex: /\.json$/,
+	handler: handlers.serveStaticJson
+}];
 
-		// todo What about json / images / other file types?
-		if (htmlRegex.test(pathname)) {
-			handlers.serveStaticHtml(pathname, res);
-		} else if (svgRegex.test(pathname)) {
-			handlers.serveStaticSvg(pathname, res);
-		} else if (jsRegex.test(pathname)) {
-			handlers.serveStaticJs(pathname, res, options);
-		} else if (imagePngRegex.test(pathname)) {
-			handlers.serveStaticImagePng(pathname, res);
-		} else if (cssRegex.test(pathname)) {
-			handlers.serveStaticCss(pathname, res);
-		} else if (jsonRegex.test(pathname)) {
-			handlers.serveStaticJson(pathname, res);
-		} else {
-    	res.end('ERROR: handler not defined for ' + pathname + '\n');
-    }
-  });
+function serveSomething(pathname, res, options) {
+	var foundMapping = _.find(handlersMap, function (mapping) {
+		return mapping.regex.test(pathname);
+	});
+	if (!foundMapping) {
+		res.end('ERROR: handler not defined for ' + pathname + '\n');
+	} else {
+		console.log('matched pattern for', pathname, foundMapping.regex);
+		console.assert(typeof foundMapping.handler === 'function', 
+			'could not find handler function for', pathname);
+		foundMapping.handler(pathname, res, options);
+	}
+}
+
+var app = connect()
+.use(connect.favicon())
+.use(connect.logger('dev'))
+.use(function(req, res){
+	var pathname = url.parse(req.url).pathname;
+	console.log('serving url', req.url, 'pathname', pathname);
+	if (pathname === '/') {
+		pathname = options.page;
+	}
+
+	serveSomething(pathname, res, options);
+});
 
 console.assert(options.port > 100, 'invalid port', options.port);
 http.createServer(app).listen(options.port);
@@ -97,19 +116,19 @@ if (!options.serve) {
 	var phantomjs = spawn('phantomjs', phantomArguments);
 
 	phantomjs.stdout.on('data', function (data) {
-	  console.log('phantomjs: ' + data);
+		console.log('phantomjs: ' + data);
 	});
 
 	phantomjs.stderr.on('data', function (data) {
-	  console.log('phantomjs: ' + data);
+		console.log('phantomjs: ' + data);
 	});
 
 	phantomjs.on('exit', function (code) {
-	  console.log('phantomjs process exited with code ' + code);
-	  console.assert(fs.existsSync(coverageFilename), 'could not find coverage file', coverageFilename);
+		console.log('phantomjs process exited with code ' + code);
+		console.assert(fs.existsSync(coverageFilename), 'could not find coverage file', coverageFilename);
 
-	  console.log('generating detailed HTML coverage pages from', coverageFilename);
-	  var collector = new istanbul.Collector();
+		console.log('generating detailed HTML coverage pages from', coverageFilename);
+		var collector = new istanbul.Collector();
 		collector.add(JSON.parse(fs.readFileSync(coverageFilename, 'utf8')));
 
 		var reportFolder = path.join(process.cwd(), 'cover');
@@ -128,6 +147,6 @@ if (!options.serve) {
 		}).writeReport(collector);
 		console.log('saved coverage text report to', path.join(process.cwd(), 'cover.txt'));
 
-	  process.exit(0);
+		process.exit(0);
 	});
 }
