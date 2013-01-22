@@ -16,11 +16,12 @@ var Report = istanbul.Report;
 
 console.assert(options.page, 'missing page filename');
 console.log('test page', options.page);
+options.page = path.resolve(process.cwd(), options.page);
 
 // set base folder to be the page's immediate folder
 // then the page itself would be just its own file name
 handlers.init({
-	basedir: path.dirname(path.resolve(process.cwd(), options.page))
+	basedir: path.dirname(options.page)
 });
 options.page = path.basename(options.page);
 
@@ -146,6 +147,15 @@ if (!options.serve) {
 			file: 'cover.txt'
 		}).writeReport(collector);
 		console.log('saved coverage text report to', path.join(process.cwd(), 'cover.txt'));
+
+		if (options.untested) {
+  		var untested = require('untested');
+
+  		untested.update({
+  			test: options.page, 
+  			coverage: coverageFilename
+  		});
+  	}
 
 		process.exit(0);
 	});
