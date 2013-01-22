@@ -151,9 +151,13 @@ if (!options.serve) {
 		if (options.untested) {
   		var untested = require('untested');
 
+  		var coverageData = collector.getFinalCoverage();
+  		var coverageSummary = untested.getCoverageSummary(coverageData);
+  		console.assert(coverageSummary, 'could not get coverage summary from\n', 
+  			JSON.stringify(coverageData, null, 2));
   		untested.update({
   			test: options.page, 
-  			coverage: coverageFilename
+  			coverage: coverageSummary
   		});
   	}
 
