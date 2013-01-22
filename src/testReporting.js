@@ -8,9 +8,6 @@ function installUnitTestHook() {
 			var status = info.passed + '/' + info.total + ' unit tests passed in ' + info.runtime + ' ms';
 			reportTestResults(status);
 		});
-	} else if (typeof jsUnity !== 'undefined') {
-		console.log('injecting jsUnity test logging');
-		jsUnity.log = console.log;
 	} else {
 		console.log('Could not determine unit testing framework used on the page');
 	}

@@ -84,14 +84,7 @@ console.log('server has started at port', options.port);
 
 if (!options.serve) {
 	console.assert(options.lassoDir, 'missing lasso dir');
-	var runner;
-	if (options.basic) {
-		runner = 'basic_runner.js';
-	} else if (options.jsunity) {
-		runner = 'basic_runner.js'; // todo: replace with custom, grab test results?
-	} else if (options.doh) {
-		runner = 'basic_runner.js'; // todo: replace with custom, grab test results?
-	}
+	var runner = 'phantomjsRunner.js';
 	var phantomRunnerFilename = path.join(options.lassoDir, 'src', runner);
 	console.assert(fs.existsSync(phantomRunnerFilename), 'could not find phantom runner', phantomRunnerFilename);
 
