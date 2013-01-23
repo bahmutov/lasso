@@ -19,6 +19,8 @@ function run(options) {
 	options.page = path.resolve(process.cwd(), options.page);
 	options.basedir = path.dirname(options.page);
 
+	options.port = options.port || 8888;
+
 	// set base folder to be the page's immediate folder
 	// then the page itself would be just its own file name
 	handlers.init({
