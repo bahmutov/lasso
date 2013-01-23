@@ -6,7 +6,6 @@ console.log('running lasso on', html);
 
 lasso.run({
 	page: html,
-	lassoDir: path.resolve('../..'),
 	timeout: 3
 });
 

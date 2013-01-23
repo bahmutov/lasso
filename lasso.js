@@ -11,14 +11,21 @@ var options = require('./src/options');
 var handlers = require('./src/handlers');
 var routes = require('./src/routes');
 var phantomjs = require('./src/phantomjsWrapper');
-
 var istanbul = require('istanbul');
 
+/**
+	minimum options when running from another module
+
+	var lasso = require('lasso');
+	lasso.run({
+		page: 'path/to/html/file'
+	});
+*/
 function run(options) {
 	console.assert(options.page, 'missing page filename');
 	options.page = path.resolve(process.cwd(), options.page);
 	options.basedir = path.dirname(options.page);
-
+	options.timeout = options.timout || 3;
 	options.port = options.port || 8888;
 
 	// set base folder to be the page's immediate folder

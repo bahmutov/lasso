@@ -9,10 +9,11 @@ var untested = require('untested');
 
 function run(options) {
 	options = options || {};
-	console.assert(options.lassoDir, 'missing lasso dir');
+	// console.assert(options.lassoDir, 'missing lasso dir');
+	// var lassoDir = path.dirname(module.filename);
 	
 	var runner = 'phantomjsRunner.js';
-	var phantomRunnerFilename = path.join(options.lassoDir, 'src', runner);
+	var phantomRunnerFilename = path.join(path.dirname(module.filename), runner);
 	console.assert(fs.existsSync(phantomRunnerFilename), 'could not find phantom runner', phantomRunnerFilename);
 
 	options.coverageFilename = path.join(process.cwd(), 'cover.json');
