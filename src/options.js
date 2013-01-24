@@ -23,7 +23,7 @@ function options() {
 		verbose: false,
 		port: 8888,
 		timeout: 3,
-		untested: false
+		untested: true
 	})
 	.alias('h', 'help')
 	.alias('c', 'cover').string("cover").describe("cover", "output folder with coverage")
