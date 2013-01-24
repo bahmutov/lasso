@@ -6,6 +6,10 @@ var handlersMap = [
 	regex: /\.html$/,
 	handler: handlers.serveStaticHtml
 },
+{ 
+	regex: /\.htm$/,
+	handler: handlers.serveStaticHtml
+},
 {
 	regex: /\.svg$/,
 	handler: handlers.serveStaticSvg
