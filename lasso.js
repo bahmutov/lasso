@@ -8,8 +8,11 @@ var path = require('path');
 var url = require('url');
 
 var options = require('./src/options');
+
 var handlers = require('./src/handlers');
 var routes = require('./src/routes');
+routes.run(handlers);
+
 var phantomjs = require('./src/phantomjsWrapper');
 var istanbul = require('istanbul');
 
@@ -22,9 +25,18 @@ var istanbul = require('istanbul');
 	});
 */
 function run(options) {
+	console.assert(options, 'missing options');
 	console.assert(options.page, 'missing page filename');
-	options.page = path.resolve(process.cwd(), options.page);
-	options.basedir = path.dirname(options.page);
+	if (/^http\:\/\//.test(options.page)) {
+		console.log('serving as proxy for page', options.page);
+		options.basedir = path.dirname(options.page);
+		console.assert(/\.html$/.test(options.page), 
+			'missing html document name in url', options.page);
+	} else {
+		options.page = path.resolve(process.cwd(), options.page);
+		options.basedir = path.dirname(options.page);
+		options.page = path.basename(options.page);
+	}
 	options.timeout = options.timout || 3;
 	options.port = options.port || 8888;
 
@@ -33,8 +45,7 @@ function run(options) {
 	handlers.init({
 		basedir: options.basedir
 	});
-	options.page = path.basename(options.page);
-
+	
 	function serveSomething(pathname, res, options) {
 		var foundMapping = routes.find(pathname);
 		if (!foundMapping) {
@@ -50,10 +61,11 @@ function run(options) {
 	var app = connect()
 	.use(connect.favicon())
 	.use(connect.logger('dev'))
-	.use(function(req, res){
+	.use(function(req, res) {
 		var pathname = url.parse(req.url).pathname;
 		console.log('serving url', req.url, 'pathname', pathname);
 		if (pathname === '/') {
+			console.log('default pathname matches page', options.page);
 			pathname = options.page;
 		}
 
@@ -64,8 +76,11 @@ function run(options) {
 	http.createServer(app).listen(options.port);
 	console.log('server has started at port', options.port);
 
-	if (module.parent || !options.serve) {
-		phantomjs.run(options);
+	console.log('target page', options.page);
+	if (!/^http/.test(options.page)) {
+		if (module.parent || !options.serve) {
+			phantomjs.run(options);
+		}
 	}
 }
 

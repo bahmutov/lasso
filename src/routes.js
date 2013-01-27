@@ -1,35 +1,25 @@
-var handlers = require('./handlers');
 var _ = require('lodash');
 
-var handlersMap = [
-{ 
-	regex: /\.html$/,
-	handler: handlers.serveStaticHtml
-},
-{ 
-	regex: /\.htm$/,
-	handler: handlers.serveStaticHtml
-},
-{
-	regex: /\.svg$/,
-	handler: handlers.serveStaticSvg
-},
-{ 
-	regex: /\.js$/, 
-	handler: handlers.serveStaticJs
-},
-{ 
-	regex: /\.png$/, 
-	handler: handlers.serveStaticImagePng
-},
-{
-	regex: /\.css$/,
-	handler: handlers.serveStaticCss
-},
-{
-	regex: /\.json$/,
-	handler: handlers.serveStaticJson
-}];
+var handlersMap = [];
+
+function mapHandler(regex, fn) {
+	handlersMap.push({ 
+		regex: regex,
+		handler: fn
+	});
+}
+
+exports.run = function(handlers) {
+	console.assert(handlers, 'undefined handlers');
+	
+	mapHandler(/\.html$/, handlers.serveStaticHtml);
+	mapHandler(/\.htm$/, handlers.serveStaticHtml);
+	mapHandler(/\.svg$/, handlers.serveStaticSvg);
+	mapHandler(/\.js$/, handlers.serveStaticJs);
+	mapHandler(/\.png$/, handlers.serveStaticImagePng);
+	mapHandler(/\.css$/, handlers.serveStaticCss);
+	mapHandler(/\.json$/, handlers.serveStaticJson);
+};
 
 exports.find = function(pathname) {
 	var foundMapping = _.find(handlersMap, function (mapping) {
