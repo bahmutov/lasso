@@ -31,6 +31,17 @@ function init(options) {
 
 function forward(pathname, response) {
 	console.log('forwarding request', pathname);
+	http.get(pathname, function(res) {
+		response.writeHead(res.statusCode, {
+			"Content-Type": res.contentType
+		});
+		res.on('data', function (data) {
+			response.write(data);
+		})
+		res.on('end', function () {
+			response.end();
+		});
+	});
 }
 
 function isFilteredJs(pathname) {
