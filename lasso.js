@@ -8,10 +8,15 @@ var path = require('path');
 var url = require('url');
 
 var options = require('./src/options');
+var routes = null;
 
-var handlers = require('./src/handlers');
-var routes = require('./src/routes');
-routes.run(handlers);
+var fileHandlers = require('./src/handlers');
+var fileRoutes = require('./src/routes');
+fileRoutes.run(fileHandlers);
+
+var proxyHandlers = require('./src/proxyHandlers');
+var proxyRoutes = require('./src/proxyRoutes');
+proxyRoutes.run(proxyHandlers);
 
 var phantomjs = require('./src/phantomjsWrapper');
 var istanbul = require('istanbul');
@@ -32,20 +37,23 @@ function run(options) {
 		options.basedir = path.dirname(options.page);
 		console.assert(/\.html$/.test(options.page), 
 			'missing html document name in url', options.page);
+		routes = proxyRoutes;
 	} else {
 		options.page = path.resolve(process.cwd(), options.page);
 		options.basedir = path.dirname(options.page);
 		options.page = path.basename(options.page);
+
+		// set base folder to be the page's immediate folder
+		// then the page itself would be just its own file name
+		fileHandlers.init({
+			basedir: options.basedir
+		});
+
+		routes = fileRoutes;
 	}
 	options.timeout = options.timout || 3;
 	options.port = options.port || 8888;
 
-	// set base folder to be the page's immediate folder
-	// then the page itself would be just its own file name
-	handlers.init({
-		basedir: options.basedir
-	});
-	
 	function serveSomething(pathname, res, options) {
 		var foundMapping = routes.find(pathname);
 		if (!foundMapping) {

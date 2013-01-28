@@ -1,7 +1,7 @@
 var fs = require('fs');
 var http = require('http');
 var path = require('path');
-var fileFinder = require('./fileFinder');
+// var fileFinder = require('./fileFinder');
 var _ = require('lodash');
 
 var istanbul = require('istanbul');
@@ -26,21 +26,11 @@ function init(options) {
 	options = options || {};
 	config.instrument = options.instrument || config.instrument;
 	config.filters = options.filters || config.filters;
-	fileFinder.init(options);
+	// fileFinder.init(options);
 }
 
-function serveStaticFile(contentType, format, pathname, response) {
-	console.assert(contentType, 'undefined contentType');
-	console.assert(format, 'undefined format');
-	console.assert(format === 'utf-8' || format === 'binary', 'wrong format', format);
-	console.assert(pathname, 'undefined pathname');
-	console.assert(response, 'undefined response');
-
-	response.writeHead(200, {
-		"Content-Type": contentType
-	});
-	response.write(fileFinder.readFileSync(pathname, format), format);
-	response.end();
+function forward(pathname, response) {
+	console.log('forwarding request', pathname);
 }
 
 function isFilteredJs(pathname) {
@@ -50,11 +40,13 @@ function isFilteredJs(pathname) {
 	});
 }
 
-function serveJs(pathname, response, options) {
-	options = options || {};
+function serveJs(pathname, response) {
+	console.log('serving js', pathname);
 	response.writeHead(200, {
 		"Content-Type": 'application/javascript'
 	});
+
+	/*
 	var filename = fileFinder.fullPath(pathname);
 	var code = fileFinder.readFileSync(pathname);
 
@@ -72,13 +64,15 @@ function serveJs(pathname, response, options) {
 	} else {
 		response.write(code);
 	}
+	*/
 	response.end();
 }
 
 exports.init = init;
-exports.serveStaticHtml = _.partial(serveStaticFile, 'text/html', 'utf-8');
+exports.forward = forward;
+//exports.serveStaticHtml = _.partial(serveStaticFile, 'text/html', 'utf-8');
 exports.serveStaticJs = serveJs;
-exports.serveStaticSvg = _.partial(serveStaticFile, 'image/svg+xml', 'utf-8');
-exports.serveStaticImagePng = _.partial(serveStaticFile, 'image/png', 'binary');;
-exports.serveStaticCss = _.partial(serveStaticFile, 'text/css', 'utf-8');
-exports.serveStaticJson = _.partial(serveStaticFile, 'application/json', 'utf-8');
+//exports.serveStaticSvg = _.partial(serveStaticFile, 'image/svg+xml', 'utf-8');
+//exports.serveStaticImagePng = _.partial(serveStaticFile, 'image/png', 'binary');;
+//exports.serveStaticCss = _.partial(serveStaticFile, 'text/css', 'utf-8');
+//exports.serveStaticJson = _.partial(serveStaticFile, 'application/json', 'utf-8');

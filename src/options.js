@@ -48,6 +48,8 @@ function options() {
 	args.lassoDir = path.dirname(process.argv[1]);
 	args.page = args._[0];
 
+	args.page = 'http://localhost/git/lasso/examples/basic/foo.html';
+
 	if (args.h || args.help) {
 		optimist.showHelp();
 		console.log(args);
