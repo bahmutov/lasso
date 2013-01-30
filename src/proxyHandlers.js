@@ -1,7 +1,6 @@
 var fs = require('fs');
 var http = require('http');
 var path = require('path');
-// var fileFinder = require('./fileFinder');
 var _ = require('lodash');
 
 var istanbul = require('istanbul');
@@ -19,22 +18,29 @@ var config = {
 		/mocha/i,
 		/pavlov\.js$/i,
 		/sinon\.js$/i
-	]
+	],
+	basedir: null
 };
 
 function init(options) {
 	options = options || {};
 	config.instrument = options.instrument || config.instrument;
 	config.filters = options.filters || config.filters;
-	// fileFinder.init(options);
+	config.basedir = options.basedir;
+	console.assert(config.basedir, 'missing basedir');
 }
 
 function forward(pathname, response) {
-	console.log('forwarding request', pathname);
-	http.get(pathname, function(res) {
+	var serverPath = pathname;
+	if (!/^http/.test(pathname)) {
+		serverPath = config.basedir + pathname;
+	}
+	console.log('forwarding request', pathname, 'to', serverPath);
+	http.get(serverPath, function(res) {
 		response.writeHead(res.statusCode, {
 			"Content-Type": res.contentType
 		});
+		res.setEncoding('utf8');
 		res.on('data', function (data) {
 			response.write(data);
 		})
@@ -52,11 +58,37 @@ function isFilteredJs(pathname) {
 }
 
 function serveJs(pathname, response) {
-	console.log('serving js', pathname);
-	response.writeHead(200, {
-		"Content-Type": 'application/javascript'
-	});
+	var serverPath = pathname;
+	if (!/^http/.test(pathname)) {
+		serverPath = config.basedir + pathname;
+	}
+	console.log('forwarding request', pathname, 'to', serverPath);
+	var code = '';
+	http.get(serverPath, function(res) {
+		response.writeHead(res.statusCode, {
+			"Content-Type": res.contentType
+		});
+		res.setEncoding('utf8');
+		res.on('data', function (data) {
+			code += data;
+		})
+		res.on('end', function () {
+			var needInstrument = config.instrument;
+			if (needInstrument) {
+				if (isFilteredJs(pathname)) {
+					console.log(pathname, 'should NOT be instrumented');
+					needInstrument = false;
+				}
+			}
 
+			if (needInstrument) {
+				var instrumented = instrumenter.instrumentSync(code, serverPath);
+				response.end(instrumented);
+			} else {
+				response.end(code);
+			}			
+		});
+	});
 	/*
 	var filename = fileFinder.fullPath(pathname);
 	var code = fileFinder.readFileSync(pathname);
@@ -76,14 +108,8 @@ function serveJs(pathname, response) {
 		response.write(code);
 	}
 	*/
-	response.end();
 }
 
 exports.init = init;
 exports.forward = forward;
-//exports.serveStaticHtml = _.partial(serveStaticFile, 'text/html', 'utf-8');
 exports.serveStaticJs = serveJs;
-//exports.serveStaticSvg = _.partial(serveStaticFile, 'image/svg+xml', 'utf-8');
-//exports.serveStaticImagePng = _.partial(serveStaticFile, 'image/png', 'binary');;
-//exports.serveStaticCss = _.partial(serveStaticFile, 'text/css', 'utf-8');
-//exports.serveStaticJson = _.partial(serveStaticFile, 'application/json', 'utf-8');

@@ -9,6 +9,7 @@ var url = require('url');
 
 var options = require('./src/options');
 var routes = null;
+var handlers = null;
 
 var fileHandlers = require('./src/handlers');
 var fileRoutes = require('./src/routes');
@@ -32,25 +33,24 @@ var istanbul = require('istanbul');
 function run(options) {
 	console.assert(options, 'missing options');
 	console.assert(options.page, 'missing page filename');
+	options.basedir = path.dirname(options.page);
+
 	if (/^http\:\/\//.test(options.page)) {
 		console.log('serving as proxy for page', options.page);
-		options.basedir = path.dirname(options.page);
 		console.assert(/\.html$/.test(options.page), 
 			'missing html document name in url', options.page);
 		routes = proxyRoutes;
+		handlers = proxyHandlers;
 	} else {
-		options.page = path.resolve(process.cwd(), options.page);
-		options.basedir = path.dirname(options.page);
+		options.page = path.resolve(process.cwd(), options.page);		
 		options.page = path.basename(options.page);
-
-		// set base folder to be the page's immediate folder
-		// then the page itself would be just its own file name
-		fileHandlers.init({
-			basedir: options.basedir
-		});
-
 		routes = fileRoutes;
+		handlers = fileHandlers;
 	}
+	handlers.init({
+		basedir: options.basedir
+	});
+
 	options.timeout = options.timout || 3;
 	options.port = options.port || 8888;
 
