@@ -23,7 +23,8 @@ function options() {
 		verbose: false,
 		port: 8888,
 		timeout: 3,
-		untested: true
+		untested: true,
+		version: false
 	})
 	.alias('h', 'help')
 	.alias('c', 'cover').string("cover").describe("cover", "output folder with coverage")
@@ -43,7 +44,14 @@ function options() {
 	.describe('timeout', 'phantomjs page testing wait timeout, seconds')
 	.boolean('untested').alias('u', 'untested')
 	.describe('untested', 'add coverage for test to "untested" if it is installed')
+	.boolean('version').describe('version', 'show version and exit')
 	.argv;
+
+	if (args.version) {
+		var package = require('../package.json');
+		console.log(package.name, 'by', package.author, 'version', package.version);
+		process.exit(0);
+	}
 
 	args.lassoDir = path.dirname(process.argv[1]);
 	args.page = args._[0];
