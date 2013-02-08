@@ -44,9 +44,7 @@ function serveStaticFile(contentType, format, pathname, response) {
 
 function isFilteredJs(pathname) {
 	console.assert(pathname, 'undefined pathname to check');
-	return config.filters.some(function (filter) {
-		return filter.test(pathname);
-	});
+	return _(config.filters).invoke('test', pathname).some();
 }
 
 function serveJs(pathname, response, options) {

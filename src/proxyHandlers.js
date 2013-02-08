@@ -50,11 +50,10 @@ function forward(pathname, response) {
 	});
 }
 
+// todo: merge with handlers.js
 function isFilteredJs(pathname) {
 	console.assert(pathname, 'undefined pathname to check');
-	return config.filters.some(function (filter) {
-		return filter.test(pathname);
-	});
+	return _(config.filters).invoke('test', pathname).some();
 }
 
 function serveJs(pathname, response) {
@@ -89,25 +88,6 @@ function serveJs(pathname, response) {
 			}			
 		});
 	});
-	/*
-	var filename = fileFinder.fullPath(pathname);
-	var code = fileFinder.readFileSync(pathname);
-
-	var needInstrument = config.instrument;
-	if (needInstrument) {
-		if (isFilteredJs(pathname)) {
-			console.log(pathname, 'should NOT be instrumented');
-			needInstrument = false;
-		}
-	}
-
-	if (needInstrument) {
-		var instrumented = instrumenter.instrumentSync(code, filename);
-		response.write(instrumented);
-	} else {
-		response.write(code);
-	}
-	*/
 }
 
 exports.init = init;
