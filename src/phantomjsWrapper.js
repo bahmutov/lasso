@@ -11,7 +11,7 @@ function run(options) {
 	options = options || {};
 	// console.assert(options.lassoDir, 'missing lasso dir');
 	// var lassoDir = path.dirname(module.filename);
-	
+
 	var runner = 'phantomjsRunner.js';
 	var phantomRunnerFilename = path.join(path.dirname(module.filename), runner);
 	console.assert(fs.existsSync(phantomRunnerFilename), 'could not find phantom runner', phantomRunnerFilename);
@@ -48,7 +48,7 @@ function run(options) {
 
 function processPhantomJsResults(options, code) {
 	console.log('phantomjs process exited with code ' + code);
-	console.assert(fs.existsSync(options.coverageFilename), 
+	console.assert(fs.existsSync(options.coverageFilename),
 		'could not find coverage file', options.coverageFilename);
 
 	console.log('generating detailed HTML coverage pages from', options.coverageFilename);
@@ -72,10 +72,10 @@ function processPhantomJsResults(options, code) {
 	console.log('saved coverage text report to', path.join(process.cwd(), 'cover.txt'));
 
 	if (options.untested) {
-  		var coverageData = collector.getFinalCoverage();
-  		console.assert(coverageData, 'could not get coverage data');
-  		updateUntestedDb(coverageData, options);
-  	}
+		var coverageData = collector.getFinalCoverage();
+		console.assert(coverageData, 'could not get coverage data');
+		updateUntestedDb(coverageData, options);
+	}
 
 	process.exit(0);
 }
@@ -87,10 +87,10 @@ function updateUntestedDb(coverageData, options)
 
 	var full = path.join(options.basedir, options.page);
 	var coverageSummary = untested.getCoverageSummary(coverageData);
-	console.assert(coverageSummary, 'could not get coverage summary from\n', 
+	console.assert(coverageSummary, 'could not get coverage summary from\n',
 		JSON.stringify(coverageData, null, 2));
 	untested.update({
-		test: full, 
+		test: full,
 		coverage: coverageSummary
 	});
 }

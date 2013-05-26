@@ -2,10 +2,11 @@ function installUnitTestHook() {
 	if (typeof QUnit !== 'undefined') {
 		console.log('injecting QUnit test collection');
 
+		/*global QUnit:true*/
 		QUnit.done(function (info) {
 			console.assert(info, 'undefined QUnit info');
-			// console.log(info.passed + '/' + info.total + ' unit tests passed in ' + info.runtime + ' ms');
-			var status = info.passed + '/' + info.total + ' unit tests passed in ' + info.runtime + ' ms';
+			var status = info.passed + '/' + info.total +
+				' unit tests passed in ' + info.runtime + ' ms';
 			reportTestResults(status);
 		});
 	} else {

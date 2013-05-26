@@ -23,7 +23,7 @@
     "maxdepth"      : 3,
     "maxstatements" : 20,
     "maxcomplexity" : 10,
-    "maxlen"        : 100,
+    "maxlen"        : 110,
 
     "asi"           : false,
     "boss"          : false,
@@ -50,7 +50,7 @@
     "supernew"      : false,
     "validthis"     : false,
 
-    "browser"       : false,
+    "browser"       : true,
     "couch"         : false,
     "devel"         : true,
     "dojo"          : false,

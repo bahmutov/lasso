@@ -2,14 +2,14 @@
 basePath = '';
 // list of files / patterns to load in the browser
 files = [
-  QUNIT,
-  QUNIT_ADAPTER,
-  'phantomjsArguments.js',
-  'test/phantomjsArguments.js'
+QUNIT,
+QUNIT_ADAPTER,
+'phantomjsArguments.js',
+'test/phantomjsArguments.js'
 ];
 // list of files to exclude
 exclude = [
-  'testacular.conf.js'
+'testacular.conf.js'
 ];
 // test results reporter to use
 // possible values: 'dots', 'progress', 'junit'
