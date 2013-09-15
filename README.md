@@ -38,4 +38,5 @@ Please contact me, Gleb Bahmutov at gleb.bahmutov@gmail.com with any comments, q
 
 License
 -------
-MIT licese, see included file. You can do pretty much anything except claim code ownership or sue me if there are problems ;)
+
+MIT license, see included file. You can do pretty much anything except claim code ownership or sue me if there are problems ;)
