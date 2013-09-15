@@ -30,7 +30,9 @@
   "engines": {
     "node": ">= 0.8.0"
   },
-  "scripts": {},
+  "scripts": {
+    "test": "node lasso.js ./examples/basic/foo.html"
+  },
   "license": "MIT",
   "preferGlobal": "true",
   "main": "./lasso.js",
