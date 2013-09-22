@@ -21,7 +21,7 @@
   ],
   "dependencies": {
     "connect": "~2.9.0",
-    "istanbul": "~0.1.35",
+    "istanbul": "~0.1.44",
     "regexp-quote": "0.0.0",
     "optimist": "~0.6.0",
     "lodash": "~2.0.0",
