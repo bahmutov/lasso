@@ -1,6 +1,6 @@
 {
   "name": "lasso-node",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "JavaScript widget and page unit testing with on the fly instrumentation",
   "author": "Gleb Bahmutov <gleb.bahmutov@gmail.com>",
   "repository": {
@@ -39,6 +39,7 @@
   "bin": "./lasso.js",
   "devDependencies": {
     "grunt-contrib-jshint": "~0.5.4",
-    "grunt": "~0.4.1"
+    "grunt": "~0.4.1",
+    "grunt-bump": "0.0.11"
   }
 }
