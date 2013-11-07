@@ -1,0 +1,11 @@
+{
+  "all": {
+    "src": ["src/*.js", "test/*.js"],
+    "options": {
+      "errorsOnly": false,
+      "cyclomatic": 6,
+      "halstead": 20,
+      "maintainability": 80
+    }
+  }
+}

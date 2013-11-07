@@ -16,11 +16,12 @@ module.exports = function (grunt) {
         },
         'nice-package': {
             all: {}
-        }
+        },
+        complexity: grunt.file.readJSON('complexity.json')
     });
 
     var plugins = module.require('matchdep').filterDev('grunt-*');
     plugins.forEach(grunt.loadNpmTasks);
 
-    grunt.registerTask('default', ['jshint', 'nice-package']);
+    grunt.registerTask('default', ['jshint', 'nice-package', 'complexity']);
 };
