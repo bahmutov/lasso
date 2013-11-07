@@ -8,6 +8,7 @@ JavaScript widget and page unit testing with on the fly instrumentation
 ![Build status][ci-image]
 
 [![dependencies][dependencies-image]][dependencies-url]
+[![devDependencies][devDependencies-image]][devDependencies-url]
 [![endorse][endorse-image]][endorse-url]
 
 installation
@@ -52,5 +53,7 @@ MIT license, see included file. You can do pretty much anything except claim cod
 [nodei.co]: https://nodei.co/npm/lasso.png?downloads=true
 [dependencies-image]: https://david-dm.org/bahmutov/lasso.png
 [dependencies-url]: https://david-dm.org/bahmutov/lasso
+[devDependencies-image]: https://david-dm.org/bahmutov/lasso/dev-status.png
+[devDependencies-url]: https://david-dm.org/bahmutov/lasso#info=devDependencies
 [endorse-image]: https://api.coderwall.com/bahmutov/endorsecount.png
 [endorse-url]: https://coderwall.com/bahmutov
