@@ -3,7 +3,7 @@ lasso
 
 JavaScript widget and page unit testing with on the fly instrumentation
 
-[![NPM info][nodei.co]](https://npmjs.org/package/lasso)
+[![NPM info][nodei.co]](https://npmjs.org/package/lasso-node)
 
 [![Build status][lasso-ci-image]][lasso-ci-url]
 [![dependencies][dependencies-image]][dependencies-url]
@@ -51,7 +51,7 @@ MIT license, see included file. You can do pretty much anything except claim cod
 [lasso-ci-image]: https://travis-ci.org/bahmutov/lasso.png?branch=master
 [lasso-ci-url]: https://travis-ci.org/bahmutov/lasso
 
-[nodei.co]: https://nodei.co/npm/lasso.png?downloads=true
+[nodei.co]: https://nodei.co/npm/lasso-node.png?downloads=true
 [dependencies-image]: https://david-dm.org/bahmutov/lasso.png
 [dependencies-url]: https://david-dm.org/bahmutov/lasso
 [devDependencies-image]: https://david-dm.org/bahmutov/lasso/dev-status.png
