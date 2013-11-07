@@ -33,6 +33,8 @@
   "scripts": {
     "test": "node lasso.js ./examples/basic/foo.html"
   },
+  "pre-commit": "npm test",
+  "pre-push": ["rm -rf node_modules", "npm install", "npm test"],
   "license": "MIT",
   "preferGlobal": true,
   "main": "./lasso.js",
@@ -42,6 +44,7 @@
     "grunt": "~0.4.1",
     "grunt-bump": "0.0.11",
     "grunt-nice-package": "~0.1.5",
-    "matchdep": "~0.3.0"
+    "matchdep": "~0.3.0",
+    "pre-git": "0.0.13"
   }
 }
