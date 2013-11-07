@@ -13,10 +13,14 @@ module.exports = function (grunt) {
             'default': {
                 src: [ '*.js', 'src/*.js' ]
             }
+        },
+        'nice-package': {
+            all: {}
         }
     });
 
-    grunt.loadNpmTasks('grunt-contrib-jshint');
-    grunt.loadNpmTasks('grunt-bump');
-    grunt.registerTask('default', ['jshint']);
+    var plugins = module.require('matchdep').filterDev('grunt-*');
+    plugins.forEach(grunt.loadNpmTasks);
+
+    grunt.registerTask('default', ['jshint', 'nice-package']);
 };

@@ -40,6 +40,8 @@
   "devDependencies": {
     "grunt-contrib-jshint": "~0.7.1",
     "grunt": "~0.4.1",
-    "grunt-bump": "0.0.11"
+    "grunt-bump": "0.0.11",
+    "grunt-nice-package": "~0.1.5",
+    "matchdep": "~0.3.0"
   }
 }
