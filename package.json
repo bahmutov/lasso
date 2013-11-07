@@ -34,7 +34,7 @@
     "test": "node lasso.js ./examples/basic/foo.html"
   },
   "license": "MIT",
-  "preferGlobal": "true",
+  "preferGlobal": true,
   "main": "./lasso.js",
   "bin": "./lasso.js",
   "devDependencies": {

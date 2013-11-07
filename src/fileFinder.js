@@ -14,11 +14,13 @@ function init(options) {
 function fullPath(pathname) {
 	var dir = path.join(config.basedir, path.dirname(pathname));
 	var foundPath = path.join(dir, pathname);
+	var prevDir;
+
 	do {
 		if (fs.existsSync(foundPath)) {
 			return foundPath;
 		}
-		var prevDir = dir;
+		prevDir = dir;
 		dir = path.normalize(path.join(dir, '..'));
 		foundPath = path.join(dir, pathname);
 	} while (dir !== prevDir);

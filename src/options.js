@@ -3,12 +3,12 @@ var path = require('path');
 var optimist = require('optimist');
 
 function options() {
-	var args = optimist.usage('Page widget JS testing with code coverage on the fly.\n' + 
-		'Usage: $0\n' + 
+	var args = optimist.usage('Page widget JS testing with code coverage on the fly.\n' +
+		'Usage: $0\n' +
 		'lasso.js <html page>')
 	.default({
 		help: 0,
-		cover: "cover",
+		cover: 'cover',
 		colors: true,
 		serve: false,
 		basic: true,
@@ -26,7 +26,7 @@ function options() {
 		untested: true
 	})
 	.alias('h', 'help')
-	.alias('c', 'cover').string("cover").describe("cover", "output folder with coverage")
+	.alias('c', 'cover').string('cover').describe('cover', 'output folder with coverage')
 	.boolean('colors').describe('colors', 'use terminal colors, might not work with continuous build')
 	.boolean('server').describe('serve', 'start webserver, remain running, useful for manual debugging')
 	.boolean('jsunity').describe('jsunity', 'filter jsUnity libraries')

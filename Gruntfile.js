@@ -11,7 +11,7 @@ module.exports = function (grunt) {
                 ]
             },
             'default': {
-                src: [ '*.js', 'src/*.js' ]
+                src: ['*.js', 'src/*.js']
             }
         },
         'nice-package': {

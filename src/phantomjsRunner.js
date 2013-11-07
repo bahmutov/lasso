@@ -1,3 +1,5 @@
+/* global phantom */
+/* global __coverage__ */
 var system = require('system');
 var fs = require('fs');
 var options = require('./phantomjsArguments').run(system.args);
@@ -10,16 +12,21 @@ var done = false;
 function waitFor(onReady, timeOutSeconds) {
     var maxtimeOutMillis = timeOutSeconds ? timeOutSeconds * 1000 : 3001, //< Default Max Timout is 3s
         start = new Date().getTime(),
-        interval = setInterval(function() {
-            if (!done && (new Date().getTime() - start < maxtimeOutMillis)) {
-            } else {
+        interval = setInterval(function () {
+            if (done || (new Date().getTime() - start > maxtimeOutMillis)) {
                 // Condition fulfilled (timeout and/or condition is 'true')
-                console.log("'waitFor()' finished in " + (new Date().getTime() - start) + "ms.");
-                typeof(onReady) === "string" ? eval(onReady) : onReady(); //< Do what it's supposed to do once the condition is fulfilled
+                console.log('"waitFor()" finished in ' + (new Date().getTime() - start) + 'ms.');
+                //< Do what it's supposed to do once the condition is fulfilled
+                if (typeof(onReady) === 'string') {
+                    /* jshint -W061 */
+                    eval(onReady);
+                } else {
+                    onReady();
+                }
                 clearInterval(interval); //< Stop this interval
             }
         }, 25); //< repeat check every N ms
-};
+}
 
 if (system.args.length < 3) {
     console.log('Usage: simple_runner.js URL outputCoverageFilename.json');
@@ -39,8 +46,8 @@ if (verbose) {
     };
 }
 
-// Route "console.log()" calls from within the Page context to the main Phantom context (i.e. current "this")
-page.onConsoleMessage = function(msg) {
+// Route 'console.log()' calls from within the Page context to the main Phantom context (i.e. current 'this')
+page.onConsoleMessage = function (msg) {
     console.log(msg);
 };
 
@@ -51,20 +58,20 @@ page.onInitialized = function () {
     console.assert(injected, 'could not inject into page', testReporting);
 };
 
-page.onCallback = function(data) {
+page.onCallback = function (data) {
     console.assert(data, 'null data from page');
     console.log('TEST RESULTS: ' + data);
     done = true;
 };
 
-page.open(system.args[1], function(status){
-    if (status !== "success") {
-        console.log("Unable to access network");
+page.open(system.args[1], function (status) {
+    if (status !== 'success') {
+        console.log('Unable to access network');
         phantom.exit(1);
     } else {
 
-        waitFor(function(){
-            var coverage = page.evaluate(function(){
+        waitFor(function () {
+            var coverage = page.evaluate(function () {
                 return __coverage__;
             });
             console.assert(coverage, 'could not get js code coverage object');
