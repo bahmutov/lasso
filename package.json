@@ -20,12 +20,12 @@
     "node"
   ],
   "dependencies": {
-    "connect": "~2.9.0",
+    "connect": "~2.11.0",
     "istanbul": "~0.1.44",
     "regexp-quote": "0.0.0",
     "optimist": "~0.6.0",
-    "lodash": "~2.0.0",
-    "untested": "~0.1.4"
+    "lodash": "~2.2.1",
+    "untested": "~0.1.5"
   },
   "engines": {
     "node": ">= 0.8.0"
@@ -38,7 +38,7 @@
   "main": "./lasso.js",
   "bin": "./lasso.js",
   "devDependencies": {
-    "grunt-contrib-jshint": "~0.5.4",
+    "grunt-contrib-jshint": "~0.7.1",
     "grunt": "~0.4.1",
     "grunt-bump": "0.0.11"
   }
